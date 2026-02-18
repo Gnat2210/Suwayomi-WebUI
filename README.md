@@ -46,6 +46,27 @@ Thus, there is no need to manually download any builds unless you want to host t
   - Create your own themes
   - Dynamic theme on manga pages
 
+## Kindle Scribe Compatibility
+
+Suwayomi-WebUI is optimized for Kindle Scribe and other E-Ink devices with the following features:
+
+### Automatic Optimizations
+- **Animation Reduction**: All animations and transitions are automatically disabled on Kindle devices to improve performance and reduce E-Ink refresh artifacts
+- **Grayscale Display**: CSS filters automatically optimize content for grayscale E-Ink displays
+- **Reduced Motion Support**: Respects the `prefers-reduced-motion` system setting for accessibility
+
+### Recommended Settings for Kindle
+1. **Theme**: Select the **E-Ink** theme in Settings > Appearance for optimal contrast on E-Ink displays
+2. **Pure Black Mode**: Enable for better readability on Kindle devices
+3. **Reader Filters**: The built-in grayscale and contrast filters in the reader are particularly useful for E-Ink displays
+
+### Technical Details
+The WebUI automatically detects Kindle devices (Kindle browsers and Amazon Silk) and applies performance optimizations including:
+- Disabled CSS transitions and animations
+- Simplified visual effects
+- Reduced resource usage
+- Enhanced compatibility with older browser APIs
+
 ## Preview
 An ongoing changelog of all relevant changes since the last stable release can be found [here](https://github.com/Suwayomi/Suwayomi-WebUI/issues/749)
 
