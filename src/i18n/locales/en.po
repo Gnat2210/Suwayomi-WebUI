@@ -1367,6 +1367,10 @@ msgstr "Duplicated entries"
 msgid "Dynamic theme colors on manga page"
 msgstr "Dynamic theme colors on manga page"
 
+#: src/features/theme/Themes.ts
+msgid "E-Ink"
+msgstr "E-Ink"
+
 #: src/features/reader/settings/layout/components/ReaderSettingTapZoneLayout.tsx
 msgid "Edge"
 msgstr "Edge"

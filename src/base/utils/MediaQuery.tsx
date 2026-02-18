@@ -18,6 +18,34 @@ export class MediaQuery {
 
     static readonly TABLET_WIDTH: Breakpoint | number = 1025;
 
+    static isKindleDevice(): boolean {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return userAgent.includes('kindle') || userAgent.includes('silk');
+    }
+
+    static useIsKindleDevice(): boolean {
+        const [isKindle] = useState(() => this.isKindleDevice());
+        return isKindle;
+    }
+
+    static prefersReducedMotion(): boolean {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    static usePrefersReducedMotion(): boolean {
+        return useMediaQuery('(prefers-reduced-motion: reduce)');
+    }
+
+    static shouldReduceMotion(): boolean {
+        return this.isKindleDevice() || this.prefersReducedMotion();
+    }
+
+    static useShouldReduceMotion(): boolean {
+        const isKindle = this.useIsKindleDevice();
+        const prefersReduced = this.usePrefersReducedMotion();
+        return isKindle || prefersReduced;
+    }
+
     static isTouchDevice(): boolean {
         return window.matchMedia('not (pointer: fine)').matches;
     }

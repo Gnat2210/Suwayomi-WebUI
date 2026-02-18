@@ -189,6 +189,9 @@ export const createTheme = (
 
     const themeForColors = createMuiTheme({ ...appColorTheme, defaultColorScheme: mode });
 
+    // Detect if animations should be reduced for E-Ink displays or accessibility
+    const shouldReduceMotion = MediaQuery.shouldReduceMotion();
+
     // only style scrollbar for devices that support hovering; otherwise, they most likely are touch devices that should
     // use the native scrollbar.
     // this is necessary since for some reason chromium uses the native scrollbar for the window scrollbar and the
@@ -203,6 +206,11 @@ export const createTheme = (
                 fontSize: 13,
                 ...appTheme.muiTheme.typography,
             },
+            transitions: shouldReduceMotion
+                ? {
+                      create: () => 'none',
+                  }
+                : undefined,
             components: {
                 ...appTheme.muiTheme.components,
                 MuiUseMediaQuery: {
