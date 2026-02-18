@@ -24,7 +24,8 @@ export class MediaQuery {
     }
 
     static useIsKindleDevice(): boolean {
-        const [isKindle] = useState(() => this.isKindleDevice());
+        // Using useState to memoize the Kindle detection since userAgent doesn't change
+        const [isKindle] = useState(() => MediaQuery.isKindleDevice());
         return isKindle;
     }
 
@@ -37,12 +38,12 @@ export class MediaQuery {
     }
 
     static shouldReduceMotion(): boolean {
-        return this.isKindleDevice() || this.prefersReducedMotion();
+        return MediaQuery.isKindleDevice() || MediaQuery.prefersReducedMotion();
     }
 
     static useShouldReduceMotion(): boolean {
-        const isKindle = this.useIsKindleDevice();
-        const prefersReduced = this.usePrefersReducedMotion();
+        const isKindle = MediaQuery.useIsKindleDevice();
+        const prefersReduced = MediaQuery.usePrefersReducedMotion();
         return isKindle || prefersReduced;
     }
 

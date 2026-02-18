@@ -30,6 +30,5 @@ body.kindle-device {
     }
     
     /* Optimize for grayscale display */
-    -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
