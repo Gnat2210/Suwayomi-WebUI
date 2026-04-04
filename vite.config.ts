@@ -23,8 +23,10 @@ export default defineConfig(({ command }) => ({
     base: command === 'serve' ? process.env.VITE_SUBPATH || './' : './',
     build: {
         outDir: 'build',
-        // Use terser for better minification (~5-10% smaller than esbuild default)
-        minify: 'terser',
+        // Use terser for better minification (~5-10% smaller than esbuild default).
+        // Terser only runs during `vite build`, never during `vite serve` (dev mode),
+        // so the slower build time only affects production builds.
+        minify: command === 'build' ? ('terser' as const) : false,
         terserOptions: {
             compress: {
                 // Two compression passes for better size reduction

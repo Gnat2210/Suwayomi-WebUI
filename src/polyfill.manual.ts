@@ -13,7 +13,12 @@ window.ResizeObserver ??= JuggleResizeObserver;
 // Object.hasOwn polyfill (not available in Chrome < 93, borderline for Kindle Scribe's Silk browser)
 if (!('hasOwn' in Object)) {
     Object.defineProperty(Object, 'hasOwn', {
-        value: (obj: object, key: PropertyKey) => Object.prototype.hasOwnProperty.call(obj, key),
+        value: (obj: object, key: PropertyKey) => {
+            if (obj == null) {
+                throw new TypeError('Cannot convert undefined or null to object');
+            }
+            return Object.prototype.hasOwnProperty.call(obj, key);
+        },
         writable: true,
         configurable: true,
     });
