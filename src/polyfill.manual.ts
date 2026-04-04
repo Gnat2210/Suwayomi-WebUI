@@ -10,7 +10,8 @@ import { ResizeObserver as JuggleResizeObserver } from '@juggle/resize-observer'
 
 window.ResizeObserver ??= JuggleResizeObserver;
 
-// Object.hasOwn polyfill (not available in Chrome < 93, borderline for Kindle Scribe's Silk browser)
+// Object.hasOwn polyfill (added in Safari 15.4 / March 2022; the Kindle Scribe's experimental browser
+// is WebKit-based and may run an older WebKit version that does not include this method)
 if (!('hasOwn' in Object)) {
     Object.defineProperty(Object, 'hasOwn', {
         value: (obj: object, key: PropertyKey) => {
