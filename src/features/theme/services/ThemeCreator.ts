@@ -205,6 +205,15 @@ export const createTheme = (
             },
             components: {
                 ...appTheme.muiTheme.components,
+                MuiButtonBase: {
+                    ...appTheme.muiTheme.components?.MuiButtonBase,
+                    defaultProps: {
+                        ...appTheme.muiTheme.components?.MuiButtonBase?.defaultProps,
+                        // ripple animations are imperceptible on e-ink displays and add unnecessary
+                        // DOM mutations + JS event processing on every interaction
+                        disableRipple: true,
+                    },
+                },
                 MuiUseMediaQuery: {
                     defaultProps: {
                         noSsr: true,
@@ -241,6 +250,16 @@ export const createTheme = (
                                           '*::-webkit-scrollbar-thumb:hover'
                                       ],
                                   }),
+                                  // suppress all transitions and animations when the OS/user prefers reduced
+                                  // motion (e-ink display users should enable this OS-level setting)
+                                  // @ts-expect-error - @media with nested selector is valid in Emotion globals but not in MUI's CSSObject type
+                                  '@media (prefers-reduced-motion: reduce)': {
+                                      '*, *::before, *::after': {
+                                          transitionDuration: '0.01ms !important',
+                                          animationDuration: '0.01ms !important',
+                                          scrollBehavior: 'auto !important',
+                                      },
+                                  },
                               }
                             : `
                         @media (hover: hover) {
@@ -259,6 +278,13 @@ export const createTheme = (
                           }
                           
                           ${appTheme.muiTheme.components?.MuiCssBaseline?.styleOverrides ?? ''}
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                          *, *::before, *::after {
+                            transition-duration: 0.01ms !important;
+                            animation-duration: 0.01ms !important;
+                            scroll-behavior: auto !important;
+                          }
                         }
                     `,
                 },
