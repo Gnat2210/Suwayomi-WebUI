@@ -97,6 +97,8 @@
             '{id title thumbnailUrl status description genre author artist}}',
 
         CHAPTERS:
+            /* Cap at 1000 chapters — covers every manga in practice while
+               keeping the XHR payload manageable on slow e-ink browsers. */
             'query($m:Int!,$n:Int)' +
             '{chapters(condition:{mangaId:$m},' +
             'order:[{by:SOURCE_ORDER,byType:ASC}],first:$n)' +
@@ -414,7 +416,9 @@
     }
 
     function loadAllMangas() {
-        gql(Q.LIBRARY, { n: 500 },
+        /* 300 titles fits well in a single XHR response.  Most libraries
+           are smaller; the count indicator tells the user if more exist. */
+        gql(Q.LIBRARY, { n: 300 },
             function (d) {
                 var nodes = (d.mangas && d.mangas.nodes) || [];
                 var total = (d.mangas && d.mangas.totalCount) || nodes.length;
@@ -507,7 +511,7 @@
             function (d) { mInfo = (d && d.manga) || {}; tryRender(); },
             function ()   { mInfo = {};                   tryRender(); }
         );
-        gql(Q.CHAPTERS, { m: mangaId, n: 2000 },
+        gql(Q.CHAPTERS, { m: mangaId, n: 1000 },
             function (d) { mChs = (d.chapters && d.chapters.nodes) || []; tryRender(); },
             function ()   { mChs = [];                                      tryRender(); }
         );
@@ -650,7 +654,7 @@
         );
 
         /* Fetch all chapters first (needed for prev/next chapter navigation) */
-        gql(Q.CHAPTERS, { m: mangaId, n: 2000 },
+        gql(Q.CHAPTERS, { m: mangaId, n: 1000 },
             function (d) {
                 S.chapters = (d.chapters && d.chapters.nodes) || [];
 
@@ -802,11 +806,20 @@
     function pollDownloads() {
         gql(Q.DL_STATUS, {},
             function (d) {
-                renderDownloadStatus(d && d.downloadStatus);
-                /* Re-poll every 5 s while this screen is visible */
-                S.pollTimer = setTimeout(function () {
-                    if (byId('dl-screen')) { pollDownloads(); }
-                }, 5000);
+                var status = d && d.downloadStatus;
+                renderDownloadStatus(status);
+                /* Only continue polling while this screen is still visible
+                   AND there is active work (running or non-empty queue).
+                   Stop immediately when the downloader is idle and the
+                   queue is empty to avoid unnecessary battery drain. */
+                var isActive = status &&
+                    (status.state === 'STARTED' ||
+                     (status.queue && status.queue.length > 0));
+                if (isActive && byId('dl-screen')) {
+                    S.pollTimer = setTimeout(function () {
+                        if (byId('dl-screen')) { pollDownloads(); }
+                    }, 5000);
+                }
             },
             function (err) {
                 var dl = byId('dl-list');
