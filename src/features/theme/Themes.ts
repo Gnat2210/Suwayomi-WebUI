@@ -412,4 +412,48 @@ export const themes = {
             },
         },
     },
+    'e-ink': {
+        isCustom: false,
+        getName: () => t`E-Ink`,
+        muiTheme: {
+            colorSchemes: {
+                light: {
+                    palette: {
+                        primary: {
+                            main: '#000',
+                        },
+                        secondary: {
+                            main: '#666',
+                        },
+                        background: {
+                            paper: '#fff',
+                            default: '#fff',
+                        },
+                        text: {
+                            primary: '#000',
+                            secondary: '#333',
+                        },
+                    },
+                },
+                dark: {
+                    palette: {
+                        primary: {
+                            main: '#fff',
+                        },
+                        secondary: {
+                            main: '#999',
+                        },
+                        background: {
+                            paper: '#000',
+                            default: '#000',
+                        },
+                        text: {
+                            primary: '#fff',
+                            secondary: '#ccc',
+                        },
+                    },
+                },
+            },
+        },
+    },
 } as const satisfies Record<string, TBaseTheme>;

@@ -40,6 +40,15 @@
 <div id="root"></div>
 <script type="module" src="./src/index.tsx"></script>
 <script>
+    // Detect Kindle device and add class to body for CSS optimizations
+    (function() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isKindle = userAgent.includes('kindle') || userAgent.includes('silk');
+        if (isKindle) {
+            document.body.classList.add('kindle-device');
+        }
+    })();
+
     const backgroundColor = (() => {
         const storageValue = window.localStorage.getItem("theme_background")
         try {

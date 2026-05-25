@@ -18,6 +18,35 @@ export class MediaQuery {
 
     static readonly TABLET_WIDTH: Breakpoint | number = 1025;
 
+    static isKindleDevice(): boolean {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return userAgent.includes('kindle') || userAgent.includes('silk');
+    }
+
+    static useIsKindleDevice(): boolean {
+        // Using useState to memoize the Kindle detection since userAgent doesn't change
+        const [isKindle] = useState(() => MediaQuery.isKindleDevice());
+        return isKindle;
+    }
+
+    static prefersReducedMotion(): boolean {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    static usePrefersReducedMotion(): boolean {
+        return useMediaQuery('(prefers-reduced-motion: reduce)');
+    }
+
+    static shouldReduceMotion(): boolean {
+        return MediaQuery.isKindleDevice() || MediaQuery.prefersReducedMotion();
+    }
+
+    static useShouldReduceMotion(): boolean {
+        const isKindle = MediaQuery.useIsKindleDevice();
+        const prefersReduced = MediaQuery.usePrefersReducedMotion();
+        return isKindle || prefersReduced;
+    }
+
     static isTouchDevice(): boolean {
         return window.matchMedia('not (pointer: fine)').matches;
     }

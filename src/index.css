@@ -8,3 +8,27 @@
 body {
     margin: 0;
 }
+
+/* Disable animations for E-Ink displays and reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Kindle-specific optimizations */
+body.kindle-device {
+    /* Disable all animations and transitions for E-Ink displays */
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* Optimize for grayscale display */
+    filter: grayscale(100%);
+}
