@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+        Suwayomi Kindle Companion
+        A lightweight, ES5 + CSS2.1 alternative front-end for the Suwayomi server.
+        Uses the same /api/graphql endpoint as the main React app — all data
+        (library, read status, downloads, bookmarks) is shared with no conflicts.
+
+        Tested against: Kindle Scribe "Basic Web Browser" (Chromium-lite)
+        Compatible with: Any browser that supports XMLHttpRequest + localStorage
+
+        Access this page at: http://<your-suwayomi-server>/kindle/
+    -->
+    <title>Suwayomi — Kindle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="loading">Starting…</div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

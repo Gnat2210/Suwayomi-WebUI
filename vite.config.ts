@@ -23,6 +23,59 @@ export default defineConfig(({ command }) => ({
     base: command === 'serve' ? process.env.VITE_SUBPATH || './' : './',
     build: {
         outDir: 'build',
+        // Use terser for better minification (~5-10% smaller than esbuild default).
+        // Terser only runs during `vite build`, never during `vite serve` (dev mode),
+        // so the slower build time only affects production builds.
+        minify: command === 'build' ? ('terser' as const) : false,
+        terserOptions: {
+            compress: {
+                // Two compression passes for better size reduction
+                passes: 2,
+                drop_debugger: true,
+            },
+        },
+        rollupOptions: {
+            output: {
+                // Split vendor dependencies into stable chunks for better browser caching
+                // and to reduce the JS that must be parsed on initial page load (important for Kindle Scribe)
+                manualChunks: (id) => {
+                    if (!id.includes('node_modules')) return undefined;
+                    if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) {
+                        return 'vendor-react';
+                    }
+                    if (id.includes('/@mui/') || id.includes('/@emotion/') || id.includes('/stylis/')) {
+                        return 'vendor-mui';
+                    }
+                    if (
+                        id.includes('/apollo') ||
+                        id.includes('/@apollo/') ||
+                        id.includes('/graphql/') ||
+                        id.includes('/@wry/') ||
+                        id.includes('/zen-observable') ||
+                        id.includes('/ts-invariant')
+                    ) {
+                        return 'vendor-graphql';
+                    }
+                    if (id.includes('/react-router') || id.includes('/@remix-run/')) {
+                        return 'vendor-router';
+                    }
+                    if (
+                        id.includes('/node-vibrant') ||
+                        id.includes('/@vibrant/') ||
+                        id.includes('/fast-average-color')
+                    ) {
+                        return 'vendor-image-processing';
+                    }
+                    if (id.includes('/@dnd-kit/')) {
+                        return 'vendor-dnd';
+                    }
+                    if (id.includes('/dayjs/') || id.includes('/@mui/x-date-pickers/')) {
+                        return 'vendor-datetime';
+                    }
+                    return undefined;
+                },
+            },
+        },
     },
     server: {
         port: Number(process.env.PORT),
